@@ -190,11 +190,11 @@ func (t *RoamingSolutionChaincode) EntitlementFromHPMNQuery(stub shim.ChaincodeS
     var key, jsonResp string
     var err error
 
-    if len(args) != 2 {
-        return nil, errors.New("Incorrect number of arguments. Expecting 2 arguments")
+    if len(args) != 1 {
+        return nil, errors.New("Incorrect number of arguments. Expecting 1 argument")
     }
 
-    key = args[1]+args[15]
+    key = args[1]
     valAsbytes, err := stub.GetState(key)
     if err != nil {
         jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
