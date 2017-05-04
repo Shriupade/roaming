@@ -30,23 +30,23 @@ type RoamingSolutionChaincode struct {
 
 type WriteCallEventDetails struct {
 
-		VPMN string
-		HPMN string
-		CallType string
-		SimChargeableSubsciber string
-		CallEventStartTimeSatmap string
-		TotalCallEventDuration string
-		NetworkLocation string
-		ImeiEquipmentIdentifier string
-		TeleServiceCode string
-		ChargedItem string
-		ExchangeRateCode string
-		ChargeType string
-		Charge string
-		ChargeableUnits string
-		ChargedUnits string
-		LocalTimeStamp string
-		status string
+		VPMN string `json:"vpmn"`
+		HPMN string `json:"hpmn"`
+		CallType string `json:"calltype"`
+		SimChargeableSubsciber string `json:"simchargeablesubsciber"`
+		CallEventStartTimeSatmap string `json:"calleventstarttimesatmap"`             
+		TotalCallEventDuration string `json:"totalcalleventduration"`
+		NetworkLocation string `json:"networklocation"`
+		ImeiEquipmentIdentifier string `json:"imeiequipmentidentifier"`
+		TeleServiceCode string `json:"teleservicecode"`
+		ChargedItem string `json:"chargeditem"`
+		ExchangeRateCode string `json:"exchangeratecode"`
+		ChargeType string `json:"chargetype"`
+		Charge string `json:"charge"`
+		ChargeableUnits string `json:"chargeableunits"`
+		ChargedUnits string `json:"chargedunits"`
+		LocalTimeStamp string `json:"localtimestamp"`               
+		Status string `json:"status"`
 }
 
 // Init method will be called during deployment.
@@ -74,7 +74,7 @@ func (t *RoamingSolutionChaincode) WriteCallEventDetails(stub shim.ChaincodeStub
 	}
 	status1 := "WriteCallEventDetailsCompleted"
 	key := args[0]+args[1]
-	WriteCallEventDetailsObj := WriteCallEventDetails{VPMN: args[0], HPMN: args[1], CallType: args[2], SimChargeableSubsciber: args[3], CallEventStartTimeSatmap: args[4], TotalCallEventDuration: args[5],NetworkLocation: args[6], ImeiEquipmentIdentifier: args[7], TeleServiceCode: args[8], ChargedItem: args[9], ExchangeRateCode: args[10], ChargeType: args[11], Charge: args[12],ChargeableUnits: args[13],ChargedUnits: args[14], LocalTimeStamp: args[15], status: status1}
+	WriteCallEventDetailsObj := WriteCallEventDetails{VPMN: args[0], HPMN: args[1], CallType: args[2], SimChargeableSubsciber: args[3], CallEventStartTimeSatmap: args[4], TotalCallEventDuration: args[5],NetworkLocation: args[6], ImeiEquipmentIdentifier: args[7], TeleServiceCode: args[8], ChargedItem: args[9], ExchangeRateCode: args[10], ChargeType: args[11], Charge: args[12],ChargeableUnits: args[13],ChargedUnits: args[14], LocalTimeStamp: args[15], Status: status1}
 	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",WriteCallEventDetailsObj)))
 			if err != nil {
 				return nil, err
@@ -96,7 +96,7 @@ func (t *RoamingSolutionChaincode) ConfirmationCallEventDetails(stub shim.Chainc
 	
 	status1 := "CallEventDetailsConfirmed"
 	key := args[0]+args[1]
-	WriteCallEventDetailsObj := WriteCallEventDetails{VPMN: args[0], HPMN: args[1], CallType: args[2], SimChargeableSubsciber: args[3], CallEventStartTimeSatmap: args[4], TotalCallEventDuration: args[5],NetworkLocation: args[6], ImeiEquipmentIdentifier: args[7], TeleServiceCode: args[8], ChargedItem: args[9], ExchangeRateCode: args[10], ChargeType: args[11], Charge: args[12],ChargeableUnits: args[13],ChargedUnits: args[14], LocalTimeStamp: args[15], status: status1}
+	WriteCallEventDetailsObj := WriteCallEventDetails{VPMN: args[0], HPMN: args[1], CallType: args[2], SimChargeableSubsciber: args[3], CallEventStartTimeSatmap: args[4], TotalCallEventDuration: args[5],NetworkLocation: args[6], ImeiEquipmentIdentifier: args[7], TeleServiceCode: args[8], ChargedItem: args[9], ExchangeRateCode: args[10], ChargeType: args[11], Charge: args[12],ChargeableUnits: args[13],ChargedUnits: args[14], LocalTimeStamp: args[15], Status: status1}
 	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",WriteCallEventDetailsObj)))
 			if err != nil {
 				return nil, err
@@ -139,7 +139,7 @@ func (t *RoamingSolutionChaincode) EntitlementFromHPMN(stub shim.ChaincodeStubIn
 		 
         status1 := "HPMNApproved"
 		
-            CallEventDetailsFromVPMNObj := WriteCallEventDetails{VPMN: args[0], HPMN: args[1], CallType: args[2], SimChargeableSubsciber: args[3], CallEventStartTimeSatmap: args[4], TotalCallEventDuration: args[5],NetworkLocation: args[6], ImeiEquipmentIdentifier: args[7], TeleServiceCode: args[8], ChargedItem: args[9], ExchangeRateCode: args[10], ChargeType: args[11], Charge: args[12],ChargeableUnits: args[13],ChargedUnits: args[14], LocalTimeStamp: args[15], status: status1}
+            CallEventDetailsFromVPMNObj := WriteCallEventDetails{VPMN: args[0], HPMN: args[1], CallType: args[2], SimChargeableSubsciber: args[3], CallEventStartTimeSatmap: args[4], TotalCallEventDuration: args[5],NetworkLocation: args[6], ImeiEquipmentIdentifier: args[7], TeleServiceCode: args[8], ChargedItem: args[9], ExchangeRateCode: args[10], ChargeType: args[11], Charge: args[12],ChargeableUnits: args[13],ChargedUnits: args[14], LocalTimeStamp: args[15], Status: status1}
 			fmt.Println("HPMN Call Event Details Structure",CallEventDetailsFromVPMNObj)
 			err = stub.PutState(key,[]byte(fmt.Sprintf("%s",CallEventDetailsFromVPMNObj)))
 			if err != nil {
@@ -169,7 +169,7 @@ func (t *RoamingSolutionChaincode) EntitlementFromHPMN(stub shim.ChaincodeStubIn
 		fmt.Println("Acceptor Service Details Structure",argsNew)
 						
 		
-		CallEventDetailsFromHPMNObj := WriteCallEventDetails{VPMN: argsNew[0], HPMN: argsNew[1], CallType: argsNew[2], SimChargeableSubsciber: argsNew[3], CallEventStartTimeSatmap: args[4], TotalCallEventDuration: args[5],NetworkLocation: args[6], ImeiEquipmentIdentifier: args[7], TeleServiceCode: args[8], ChargedItem: args[9], ExchangeRateCode: args[10], ChargeType: args[11], Charge: args[12],ChargeableUnits: args[13],ChargedUnits: args[14], LocalTimeStamp: args[15], status: status1}
+		CallEventDetailsFromHPMNObj := WriteCallEventDetails{VPMN: argsNew[0], HPMN: argsNew[1], CallType: argsNew[2], SimChargeableSubsciber: argsNew[3], CallEventStartTimeSatmap: args[4], TotalCallEventDuration: args[5],NetworkLocation: args[6], ImeiEquipmentIdentifier: args[7], TeleServiceCode: args[8], ChargedItem: args[9], ExchangeRateCode: args[10], ChargeType: args[11], Charge: args[12],ChargeableUnits: args[13],ChargedUnits: args[14], LocalTimeStamp: args[15], Status: status1}
         
 		fmt.Println("VPMN+HPMN Call Event Details Structure",CallEventDetailsFromHPMNObj)
 		// put the value for Regulator Query in future
