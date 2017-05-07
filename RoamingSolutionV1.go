@@ -73,7 +73,7 @@ func (t *RoamingSolutionChaincode) WriteCallEventDetails(stub shim.ChaincodeStub
 		return nil, errors.New("Incorrect number of arguments. Expecting 16")
 	}
 	status1 := "WriteCallEventDetailsCompleted"
-	key := args[0]+args[1]
+	key := args[0]+args[1]+args[15]
 	WriteCallEventDetailsObj := WriteCallEventDetails{VPMN: args[0], HPMN: args[1], CallType: args[2], SimChargeableSubsciber: args[3], CallEventStartTimeSatmap: args[4], TotalCallEventDuration: args[5],NetworkLocation: args[6], ImeiEquipmentIdentifier: args[7], TeleServiceCode: args[8], ChargedItem: args[9], ExchangeRateCode: args[10], ChargeType: args[11], Charge: args[12],ChargeableUnits: args[13],ChargedUnits: args[14], LocalTimeStamp: args[15], Status: status1}
 	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",WriteCallEventDetailsObj)))
 			if err != nil {
@@ -94,7 +94,7 @@ func (t *RoamingSolutionChaincode) EntitlementFromHPMN(stub shim.ChaincodeStubIn
 	    }
 
 			
-		key := argsVpmn[0]+argsVpmn[1]		
+		key := argsVpmn[0]+argsVpmn[1]+argsVpmn[15]		
 	        valAsbytes, err := stub.GetState(key)
 		if err != nil {
 			jsonResp := "{\"Error\":\"Failed to get state for " + key + "\"}"
@@ -144,7 +144,7 @@ func (t *RoamingSolutionChaincode) VPMNQuery(stub shim.ChaincodeStubInterface, a
         return nil, errors.New("Incorrect number of arguments. Expecting 2 argument")
     }
 
-    key = args[0]+args[1]
+    key = args[0]+args[1]+args[15]
     valAsbytes, err := stub.GetState(key)
     if err != nil {
         jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
@@ -169,7 +169,7 @@ func (t *RoamingSolutionChaincode) EntitlementFromHPMNQuery(stub shim.ChaincodeS
         return nil, errors.New("Incorrect number of arguments. Expecting 2 argument")
     }
 
-    key = args[0]+args[1]
+    key = args[0]+args[1]+args[15]
     valAsbytes, err := stub.GetState(key)
     if err != nil {
         jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
