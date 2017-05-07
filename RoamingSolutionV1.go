@@ -30,23 +30,23 @@ type RoamingSolutionChaincode struct {
 
 type WriteCallEventDetails struct {
 
-		VPMN string `json:"vpmn"`
-		HPMN string `json:"hpmn"`
-		CallType string `json:"calltype"`
-		SimChargeableSubsciber string `json:"simchargeablesubsciber"`
-		CallEventStartTimeSatmap string `json:"calleventstarttimesatmap"`             
-		TotalCallEventDuration string `json:"totalcalleventduration"`
-		NetworkLocation string `json:"networklocation"`
-		ImeiEquipmentIdentifier string `json:"imeiequipmentidentifier"`
-		TeleServiceCode string `json:"teleservicecode"`
-		ChargedItem string `json:"chargeditem"`
-		ExchangeRateCode string `json:"exchangeratecode"`
-		ChargeType string `json:"chargetype"`
-		Charge string `json:"charge"`
-		ChargeableUnits string `json:"chargeableunits"`
-		ChargedUnits string `json:"chargedunits"`
-		LocalTimeStamp string `json:"localtimestamp"`               
-		Status string `json:"status"`
+		VPMN string
+		HPMN string
+		CallType string
+		SimChargeableSubsciber string
+		CallEventStartTimeSatmap string
+		TotalCallEventDuration string
+		NetworkLocation string
+		ImeiEquipmentIdentifier string
+		TeleServiceCode string
+		ChargedItem string
+		ExchangeRateCode string
+		ChargeType string
+		Charge string
+		ChargeableUnits string
+		ChargedUnits string
+		LocalTimeStamp string
+		status string
 }
 
 // Init method will be called during deployment.
@@ -73,8 +73,8 @@ func (t *RoamingSolutionChaincode) WriteCallEventDetails(stub shim.ChaincodeStub
 		return nil, errors.New("Incorrect number of arguments. Expecting 16")
 	}
 	status1 := "WriteCallEventDetailsCompleted"
-	key := args[0]+args[1]+args[15]
-	WriteCallEventDetailsObj := WriteCallEventDetails{VPMN: args[0], HPMN: args[1], CallType: args[2], SimChargeableSubsciber: args[3], CallEventStartTimeSatmap: args[4], TotalCallEventDuration: args[5],NetworkLocation: args[6], ImeiEquipmentIdentifier: args[7], TeleServiceCode: args[8], ChargedItem: args[9], ExchangeRateCode: args[10], ChargeType: args[11], Charge: args[12],ChargeableUnits: args[13],ChargedUnits: args[14], LocalTimeStamp: args[15], Status: status1}
+	key := args[0]+args[1]
+	WriteCallEventDetailsObj := WriteCallEventDetails{VPMN: args[0], HPMN: args[1], CallType: args[2], SimChargeableSubsciber: args[3], CallEventStartTimeSatmap: args[4], TotalCallEventDuration: args[5],NetworkLocation: args[6], ImeiEquipmentIdentifier: args[7], TeleServiceCode: args[8], ChargedItem: args[9], ExchangeRateCode: args[10], ChargeType: args[11], Charge: args[12],ChargeableUnits: args[13],ChargedUnits: args[14], LocalTimeStamp: args[15], status: status1}
 	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",WriteCallEventDetailsObj)))
 			if err != nil {
 				return nil, err
@@ -86,6 +86,26 @@ func (t *RoamingSolutionChaincode) WriteCallEventDetails(stub shim.ChaincodeStub
 
 
 
+func (t *RoamingSolutionChaincode) ConfirmationCallEventDetails(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+
+    fmt.Println("ConfirmationCallEventDetails Invoke Begins...")
+		
+	if len(args) != 16 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 16")
+	}
+	
+	status1 := "CallEventDetailsConfirmed"
+	key := args[0]+args[1]
+	WriteCallEventDetailsObj := WriteCallEventDetails{VPMN: args[0], HPMN: args[1], CallType: args[2], SimChargeableSubsciber: args[3], CallEventStartTimeSatmap: args[4], TotalCallEventDuration: args[5],NetworkLocation: args[6], ImeiEquipmentIdentifier: args[7], TeleServiceCode: args[8], ChargedItem: args[9], ExchangeRateCode: args[10], ChargeType: args[11], Charge: args[12],ChargeableUnits: args[13],ChargedUnits: args[14], LocalTimeStamp: args[15], status: status1}
+	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",WriteCallEventDetailsObj)))
+			if err != nil {
+				return nil, err
+			}
+	
+	fmt.Println("ConfirmationCallEventDetails  Invoke ends...")
+	return nil, nil 
+}
+
 // in args this will take three values - VPMN and HPMN and LocalTimeStamp
 func (t *RoamingSolutionChaincode) EntitlementFromHPMN(stub shim.ChaincodeStubInterface, argsVpmn []string) ([]byte, error) {
       
@@ -94,8 +114,8 @@ func (t *RoamingSolutionChaincode) EntitlementFromHPMN(stub shim.ChaincodeStubIn
 	    }
 
 			
-		key := argsVpmn[0]+argsVpmn[1]+argsVpmn[15]		
-	        valAsbytes, err := stub.GetState(key)
+		key := argsVpmn[0]+argsVpmn[1]+argsVpmn[15]
+		valAsbytes, err := stub.GetState(key)
 		if err != nil {
 			jsonResp := "{\"Error\":\"Failed to get state for " + key + "\"}"
 			return nil, errors.New(jsonResp)
@@ -104,8 +124,40 @@ func (t *RoamingSolutionChaincode) EntitlementFromHPMN(stub shim.ChaincodeStubIn
 			return nil, errors.New(jsonResp)
 		}
 		
+		VPMNCallEventDetails := fmt.Sprintf("%s", valAsbytes)
 		
-		HPMNCallEventDetails := fmt.Sprintf("%s", valAsbytes)
+		VPMNCallEventDetails = strings.Trim(VPMNCallEventDetails,"{")
+		VPMNCallEventDetails = strings.Trim(VPMNCallEventDetails,"}")
+		VPMNCallEventDetails = strings.Trim(VPMNCallEventDetails,"[")
+		VPMNCallEventDetails = strings.Trim(VPMNCallEventDetails,"]")
+		
+		args := strings.Split(VPMNCallEventDetails, " ")
+		
+	    fmt.Println("VPMN Call Events Details Structure",args)
+	   	   				 
+		 // Put the state of HPMN
+		 
+        status1 := "HPMNApproved"
+		
+            CallEventDetailsFromVPMNObj := WriteCallEventDetails{VPMN: args[0], HPMN: args[1], CallType: args[2], SimChargeableSubsciber: args[3], CallEventStartTimeSatmap: args[4], TotalCallEventDuration: args[5],NetworkLocation: args[6], ImeiEquipmentIdentifier: args[7], TeleServiceCode: args[8], ChargedItem: args[9], ExchangeRateCode: args[10], ChargeType: args[11], Charge: args[12],ChargeableUnits: args[13],ChargedUnits: args[14], LocalTimeStamp: args[15], status: status1}
+			fmt.Println("HPMN Call Event Details Structure",CallEventDetailsFromVPMNObj)
+			err = stub.PutState(key,[]byte(fmt.Sprintf("%s",CallEventDetailsFromVPMNObj)))
+			if err != nil {
+				return nil, err
+			}
+		
+	
+	    valAsbytesNew, errNew := stub.GetState(key)
+		if errNew != nil {
+			jsonResp := "{\"Error\":\"Failed to get state for " + key + "\"}"
+			return nil, errors.New(jsonResp)
+		} else if len(valAsbytes) == 0{
+			jsonResp := "{\"Error\":\"Failed to get Query for " + key + "\"}"
+			return nil, errors.New(jsonResp)
+		}
+		
+		
+		HPMNCallEventDetails := fmt.Sprintf("%s", valAsbytesNew)
 		
 		HPMNCallEventDetails = strings.Trim(HPMNCallEventDetails,"{")
 		HPMNCallEventDetails = strings.Trim(HPMNCallEventDetails,"}")
@@ -114,15 +166,13 @@ func (t *RoamingSolutionChaincode) EntitlementFromHPMN(stub shim.ChaincodeStubIn
 		
 		argsNew := strings.Split(HPMNCallEventDetails, " ")
 		
-		fmt.Println("HPMN Call Event Details Structure",argsNew)
-
-		//Some HPMN Call Event Validation logic
+		fmt.Println("Acceptor Service Details Structure",argsNew)
 						
-		status1 := "HPMNApproved"
-		CallEventDetailsFromHPMNObj := WriteCallEventDetails{VPMN: argsNew[0], HPMN: argsNew[1], CallType: argsNew[2], SimChargeableSubsciber: argsNew[3], CallEventStartTimeSatmap: argsNew[4], TotalCallEventDuration: argsNew[5],NetworkLocation: argsNew[6], ImeiEquipmentIdentifier: argsNew[7], TeleServiceCode: argsNew[8], ChargedItem: argsNew[9], ExchangeRateCode: argsNew[10], ChargeType: argsNew[11], Charge: argsNew[12],ChargeableUnits: argsNew[13],ChargedUnits: argsNew[14], LocalTimeStamp: argsNew[15], Status: status1}
+		
+		CallEventDetailsFromHPMNObj := WriteCallEventDetails{VPMN: argsNew[0], HPMN: argsNew[1], CallType: argsNew[2], SimChargeableSubsciber: argsNew[3], CallEventStartTimeSatmap: args[4], TotalCallEventDuration: args[5],NetworkLocation: args[6], ImeiEquipmentIdentifier: args[7], TeleServiceCode: args[8], ChargedItem: args[9], ExchangeRateCode: args[10], ChargeType: args[11], Charge: args[12],ChargeableUnits: args[13],ChargedUnits: args[14], LocalTimeStamp: args[15], status: status1}
         
 		fmt.Println("VPMN+HPMN Call Event Details Structure",CallEventDetailsFromHPMNObj)
-	
+		// put the value for Regulator Query in future
 		err = stub.PutState(key,[]byte(fmt.Sprintf("%s",CallEventDetailsFromHPMNObj)))
 			if err != nil {
 				return nil, err
@@ -134,31 +184,6 @@ func (t *RoamingSolutionChaincode) EntitlementFromHPMN(stub shim.ChaincodeStubIn
 
 }
 
-// args should be three values - VPMN and LocalTimeStamp
-
-func (t *RoamingSolutionChaincode) VPMNQuery(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-    var key, jsonResp string
-    var err error
-
-    if len(args) != 2 {
-        return nil, errors.New("Incorrect number of arguments. Expecting 2 argument")
-    }
-
-    key = args[0]+args[1]+args[15]
-    valAsbytes, err := stub.GetState(key)
-    if err != nil {
-        jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
-        return nil, errors.New(jsonResp)
-    } else if len(valAsbytes) == 0{
-	    jsonResp = "{\"Error\":\"Failed to get Query for " + key + "\"}"
-        return nil, errors.New(jsonResp)
-	}
-
-	fmt.Println("Query VPMN Call Event Written confirmation ... end") 
-    return valAsbytes, nil 
-
-}
-
 // args should be three values - HPMN and LocalTimeStamp
 
 func (t *RoamingSolutionChaincode) EntitlementFromHPMNQuery(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
@@ -166,10 +191,10 @@ func (t *RoamingSolutionChaincode) EntitlementFromHPMNQuery(stub shim.ChaincodeS
     var err error
 
     if len(args) != 2 {
-        return nil, errors.New("Incorrect number of arguments. Expecting 2 argument")
+        return nil, errors.New("Incorrect number of arguments. Expecting 2 arguments")
     }
 
-    key = args[0]+args[1]+args[15]
+    key = args[1]+args[15]
     valAsbytes, err := stub.GetState(key)
     if err != nil {
         jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
@@ -196,8 +221,10 @@ func (t *RoamingSolutionChaincode) Invoke(stub shim.ChaincodeStubInterface, func
 		return t.WriteCallEventDetails (stub, args)
 	}else if function == "EntitlementFromHPMN" {
 		return t.EntitlementFromHPMN(stub, args)
+	}else if function == "ConfirmationCallEventDetails" {
+		return t.ConfirmationCallEventDetails(stub, args)
 	} else{
-	    return nil, errors.New("Invalid function name. Expecting 'WriteCallEventDetails' or 'EntitlementFromHPMN' but found '" + function + "'")
+	    return nil, errors.New("Invalid function name. Expecting 'WriteCallEventDetails' or 'EntitlementFromHPMN' or 'ConfirmationCallEventDetails' but found '" + function + "'")
 	}
 	
 	
@@ -214,10 +241,6 @@ func (t *RoamingSolutionChaincode) Query(stub shim.ChaincodeStubInterface, funct
 	
 	if function == "EntitlementFromHPMNQuery" {
 		return t.EntitlementFromHPMNQuery(stub, args)
-        }else if function == "VPMNQuery" {
-		return t.VPMNQuery(stub, args)
-	} else{
-	    return nil, errors.New("Invalid function name. Expecting 'EntitlementFromHPMNQuery' or 'VPMNQuery' but found '" + function + "'")
 	} 
 	
 	// else we can query WorldState to fetch value
